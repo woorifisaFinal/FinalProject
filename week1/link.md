@@ -4,6 +4,7 @@
 수민 참고자료:  https://volcano-roadway-bb9.notion.site/NASDAQ-c2262187b463401ba7a885784e973532?pvs=4  
 주혁 참고자료:  https://gold-measure-94d.notion.site/bb88d1256724460ca33a83dc1b740f50?pvs=4  
 병근 참고자료:  https://m.blog.naver.com/j7youngh/222966330839   /   https://dacon.io/codeshare/5361  
+병금 감성사전 참고자료 : https://dacon.io/competitions/official/235914/codeshare/5550   /  https://github.com/CSJ516/Stock_Prediction_project
 태완 참고자료:  
 하성 참고자료:  
 
