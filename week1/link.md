@@ -7,5 +7,5 @@
 병근 참고자료:  https://m.blog.naver.com/j7youngh/222966330839   /   https://dacon.io/codeshare/5361  
 병근 감성사전 참고자료 : https://dacon.io/competitions/official/235914/codeshare/5550   /  https://github.com/CSJ516/Stock_Prediction_project
 태완 참고자료:  https://colab.research.google.com/drive/1xIwiActw7OLo7hL4TQOS-0ihZUQZ5nlX?usp=sharing   
-하성 참고자료:  
+하성 참고자료:  https://velog.io/@tree_jhk/%EB%89%B4%EC%8A%A4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%88%98%EC%A7%91-%EB%B0%8F-%EC%A0%84%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0-1-%EC%88%98%EC%A7%91%ED%95%98%EA%B8%B0
 
