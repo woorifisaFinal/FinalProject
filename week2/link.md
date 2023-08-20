@@ -3,5 +3,6 @@
 주혁 참고자료:  
 병근 참고자료:   
 병근 감성사전 참고자료 :  
-태완 참고자료:   
+태완 참고자료:   https://colab.research.google.com/drive/1VBDVEUVaYXjXWDBhirmjZB1WLq56Smm6?usp=sharing
+https://colab.research.google.com/drive/1FuqeNlvC2ZQCkMd3HXav7G6gjTX7_Edj?usp=sharing
 하성 참고자료:   
