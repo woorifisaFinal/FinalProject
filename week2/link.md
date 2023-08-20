@@ -5,4 +5,4 @@
 병근 감성사전 참고자료 :  
 태완 참고자료:   https://colab.research.google.com/drive/1VBDVEUVaYXjXWDBhirmjZB1WLq56Smm6?usp=sharing
 https://colab.research.google.com/drive/1FuqeNlvC2ZQCkMd3HXav7G6gjTX7_Edj?usp=sharing
-하성 참고자료:   
+하성 참고자료:   https://alluring-approach-f59.notion.site/241a7c2e097a4060a8f6015bb2572e23?pvs=4
