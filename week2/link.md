@@ -2,7 +2,133 @@
 수민 참고자료: https://volcano-roadway-bb9.notion.site/2-562427041507406c89bf0ff163c653b3?pvs=4   
 주혁 참고자료:  
 병근 참고자료:   
-병근 감성사전 참고자료 :  
-태완 참고자료:   https://colab.research.google.com/drive/1VBDVEUVaYXjXWDBhirmjZB1WLq56Smm6?usp=sharing
-https://colab.research.google.com/drive/1FuqeNlvC2ZQCkMd3HXav7G6gjTX7_Edj?usp=sharing
-하성 참고자료:   https://alluring-approach-f59.notion.site/241a7c2e097a4060a8f6015bb2572e23?pvs=4
+태완 참고자료:https://colab.research.google.com/drive/1VBDVEUVaYXjXWDBhirmjZB1WLq56Smm6?usp=sharing
+https://colab.research.google.com/drive/1FuqeNlvC2ZQCkMd3HXav7G6gjTX7_Edj?usp=sharing  
+하성 참고자료:https://alluring-approach-f59.notion.site/241a7c2e097a4060a8f6015bb2572e23?pvs=4  
+
+# 0814
+채권
+
+- 금리, 수익률, 변동성 추가해보기
+- corr() 해서 코드 만들기
+- 18일
+
+주식 - 이머징 국가 (인도, 대만, 브라질,한국)
+
+- 코드 따오기
+- log/ 코드 재사용
+- 모듈화
+
+주식 - 선진국 국가 (미국, 일본, 독일)
+
+- 깃허브 참고하세요
+
+텍스트 데이터
+
+- 감성사전 바꾸기 (코스피/나스닥)
+
+베이스라인
+
+- 펀더멘탈 + 경제지표 + 기술적지표 = 10개
+- 선형회귀, XGBoost, AIRIMA, RNN, LSTM
+
+```
+💡 **중요**
+Train: 2017년 ~ 2021년 (5개년)
+
+Test: 2022년 
+
+데이터 정보 (출처, 컬럼, 데이터 추출 코드)
+
+- 적어주세요
+
+코드 내 주석으로 달아주세요
+
+1. 데이터 선정 이유 (따로 데이터 다운받은 경우)
+2. 상관관계 해석
+3. 모델 선정 이유
+4. 본인이 생각하는 개선점
+```
+
+### 고객 관점에서 기획하기 - 설문조사
+
+[질문 리스트](https://www.notion.so/dcd1e27494384440acb414a17f3ebcf3?pvs=21)
+
+“투자성향 찾기 & 포트폴리오 추천” 
+
+투자성향질문(정형적) + 라이프스타일에서 추측해본 투자성향 ⇒ 더 나은 포트폴리오 전략 제안
+
+### 산출물
+
+아키텍처 - 수민 & 하성
+
+패키지 - 태완 & 지우
+
+DB - 주혁 & 병근
+
+
+# 0816
+
+산출물 완료하기
+
+설문조사 질문 추가하기
+
+상품검색(x)
+
+일반검색 = 종목검색
+
+포트폴리오 전략 추천 제안 받고 전통적 방법과 수익률 비교하기 → 상품비교
+
+모델 - 주가 예측
+
+- 시점별 주가예측
+- 알고리즘 (선형회귀, XGBoost, ARIMA, RNN, LSTM)
+- 우선 가장 성능이 좋은 알고리즘 선정 후 (성능평가지표) → 3개월 후 수익 예측값 내기
+
+모델 정의 - 포트폴리오 비율 추천
+
+학습
+
+- 배치
+- 기간 (5년)
+- 저장 (s3)
+
+추론
+
+- 알고리즘 설계
+- 결과서빙
+    - 투자성향에 따라 모델이 달라질것이냐/아니냐
+    - 같다면 - 투자성향이 매개변수로 달라지는지 확인 필요
+    - 다르다면 - 모델이 제곱으로 늘어나는 점
+    - 추론 결과를 다 만들어놓고 결과 응답을 받아오는게 되는지 확인 필요
+ 
+# 0817
+
+주가예측(주식/채권/대안자산)
+
+test = 2017~2020
+
+vaildation, test = 2021, 2022
+
+model = Linear Regression, XGBoost(Regressor), ARIMA, RNN, LSTM
+
+(XGboost, LSTM 두개만 해도 됩니다)
+
+예측값: 수익률
+
+20일까지
+
+EDA 과정,  최종 dataset, model(각모델들), 성능지표측정 결과, 3개월 후 예측한 값(각 모델) 가 들어간 
+
+본인이 맡은 자산별로 깃허브로 올려주세요 EX. 코스피, 금, 은 = 파일 3개
+
+P.S 제가 보낸 주피터 파일에 나온 시계열 데이터 전처리 과정은 시계열이 갖는 특성을 찾기 위한 과정입니다
+
+ARIMA 모델은 이 특성을 찾아야 모델을 완성할 수 있습니다.
+
+이 특성을 찾지 않으면 다른 모델은 특성을 찾도록 후처리 과정이 필요합니다.( ex. window size 찾기)
+
+
+# 0818
+
+각자 모델링
