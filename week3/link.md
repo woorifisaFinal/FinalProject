@@ -3,8 +3,8 @@
     xgboost: https://colab.research.google.com/drive/1oF5twMjJwV_Ey5A60iWjf5bCAul8dnKH?usp=sharing
     lstm : https://colab.research.google.com/drive/1fAjFwXwpApOyzjNMCe7UiKehF57Y1zRo?usp=sharing    
 주혁 참고자료:  
-병근 참고자료: https://slash-crest-e4f.notion.site/5296eb979b2b438497b68dc2d65be0c2?pvs=4
-태완 참고자료:   https://colab.research.google.com/drive/1QIDJP9VbvVJhUWpx0hDS7vBoLBEDBpVY?usp=sharing
+병근 참고자료: https://slash-crest-e4f.notion.site/5296eb979b2b438497b68dc2d65be0c2?pvs=4  
+태완 참고자료: https://colab.research.google.com/drive/1QIDJP9VbvVJhUWpx0hDS7vBoLBEDBpVY?usp=sharing  
 하성 참고자료:   
 
 
