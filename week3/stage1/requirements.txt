@@ -1,0 +1,12 @@
+importlib
+
+numpy
+pandas
+sklearn
+matplotlib
+
+ta
+yfinance
+pandas-datareader
+
+tensorflow
