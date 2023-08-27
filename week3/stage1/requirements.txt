@@ -1,5 +1,7 @@
+# 추가된 부분, 패키지화하기 위한
 importlib
 
+# 6명의 공통 라이브러리
 numpy
 pandas
 sklearn
@@ -10,3 +12,7 @@ yfinance
 pandas-datareader
 
 tensorflow
+
+
+# JW
+pykalman

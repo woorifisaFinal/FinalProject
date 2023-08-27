@@ -9,33 +9,8 @@ Original file is located at
 Standard Scale -> test 제외 후 각각
 """
 
-
+from os.path import join as opj
 import pandas as pd
-
-raw_train = pd.read_csv("/content/drive/MyDrive/adj_raw_train.csv")
-
-#date열 str에서 datetime형으로 변환
-raw_train['date'] = pd.to_datetime(raw_train['date'])
-
-target_year=2021
-train = raw_train[raw_train['date'].dt.year<target_year]
-len(train)
-
-target_year=2021
-validation = raw_train[raw_train['date'].dt.year==target_year]
-len(validation)
-
-target_year=2022
-test = raw_train[raw_train['date'].dt.year==target_year]
-len(test)
-
-raw_train
-
-raw_train['target'] = raw_train.d_ret
-
-raw_train = raw_train.drop('d_ret',axis=1)
-
-raw_train.set_index("date",inplace=True)
 
 """# LSTM
 https://pasus.tistory.com/266
@@ -43,111 +18,7 @@ https://6mini.github.io/deep%20learning/2021/10/21/NNHyperparameter/
 
 """
 
-raw_train.columns
 
-# save original 'returns' prices for later
-original_returns = raw_train['target'].values
-
-# separate dates for future plotting
-dates = pd.to_datetime(raw_train['date'])
-
-raw_train.set_index("date",inplace=True)
-
-# variables for training
-cols = list(raw_train)[0:9]
-
-# new dataframe with only training data
-stock_data = raw_train[cols].astype(float)
-
-stock_data.to_csv("stock_data.csv")
-
-# normalize the dataset
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-scaler = StandardScaler()
-scaler = scaler.fit(stock_data[:1229])
-stock_data_scaled = scaler.transform(stock_data[:1229])
-
-# normalize the dataset
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-
-stock_data_scaled_test = scaler.transform(stock_data[1229:])
-
-stock_data_target = raw_train[["target"]]
-
-stock_data_target[1229:]
-
-stock_data_scaled_test.shape
-
-# split to train data and test data
-n_train = 981
-train_data_scaled = stock_data_scaled[0: n_train]
-train_dates = dates[0: n_train]
-
-n_validation = n_train + 248
-val_data_scaled = stock_data_scaled[n_train: n_validation]
-val_dates = dates[n_train: n_validation]
-
-n_test = n_validation
-
-test_data_scaled = stock_data_scaled_test
-test_dates = dates[n_test:]
-
-# split to train data and test data
-n_train = 981
-train_data_test_scaled = stock_data_target[0: n_train]
-train_dates = dates[0: n_train]
-
-n_validation = n_train + 248
-val_data_test_scaled = stock_data_target[n_train: n_validation]
-val_dates = dates[n_train: n_validation]
-
-n_test = n_validation
-
-test_data_test_scaled = stock_data_target[n_test:]
-test_dates = dates[n_test:]
-
-import numpy as np
-# data reformatting for LSTM
-pred_days = 1  # prediction period - 3months
-seq_len = 10   # sequence length = past days for future prediction.
-input_dim = 10  # input_dimension = ['close', 'open', 'high', 'low', 'rsi', 'MACD_12_26', 'mavg', 'CSI', 'kalman','target]
-
-trainX = []
-trainY = []
-valX = []
-valY = []
-testX = []
-testY = []
-
-for i in range(seq_len, n_train-pred_days +1):
-    trainX.append(train_data_scaled[i - seq_len:i, 0:train_data_scaled.shape[1]])
-    trainY.append(train_data_test_scaled[i + pred_days - 1:i + pred_days].values)
-
-for i in range(seq_len, len(val_data_scaled)-pred_days +1):
-    valX.append(val_data_scaled[i - seq_len:i, 0:val_data_scaled.shape[1]])
-    valY.append(val_data_test_scaled[i + pred_days - 1:i + pred_days].values)
-
-for i in range(seq_len, len(test_data_scaled)-pred_days +1):
-    testX.append(test_data_scaled[i - seq_len:i, 0:test_data_scaled.shape[1]])
-    testY.append(test_data_test_scaled[i + pred_days - 1:i + pred_days].values)
-
-trainX, trainY = np.array(trainX), np.array(trainY)
-valX, valY = np.array(valX), np.array(valY)
-testX, testY = np.array(testX), np.array(testY)
-
-print(trainX.shape, trainY.shape)
-print(testX.shape, testY.shape)
-print(valX.shape, valY.shape)
-
-'''
-(971, 10, 9) (971, 1, 1)
-(236, 10, 9) (236, 1, 1)
-(238, 10, 9) (238, 1, 1)
-'''
-
-!pip install keras
-
-trainX.shape[2]
 
 # LSTM model
 import numpy as np
@@ -158,108 +29,22 @@ from tensorflow.keras.optimizers import Adam
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
+def create_lstm_model(trainX, trainY):
+    model = Sequential()
+    model.add(LSTM(64, input_shape=(trainX.shape[1], trainX.shape[2]),
+                return_sequences=True))
+    model.add(LSTM(32, return_sequences=False))
+    model.add(Dense(trainY.shape[1]))
 
-model = Sequential()
-model.add(LSTM(64, input_shape=(trainX.shape[1], trainX.shape[2]),
-               return_sequences=True))
-model.add(LSTM(32, return_sequences=False))
-model.add(Dense(trainY.shape[1]))
+    # specify your learning rate
+    learning_rate = 0.001
+    # create an Adam optimizer with the specified learning rate
+    optimizer = Adam(learning_rate=learning_rate)
+    # compile your model using the custom optimizer
+    model.compile(optimizer=optimizer, loss='mse')
 
-# specify your learning rate
-learning_rate = 0.001
-# create an Adam optimizer with the specified learning rate
-optimizer = Adam(learning_rate=learning_rate)
-# compile your model using the custom optimizer
-model.compile(optimizer=optimizer, loss='mse')
+    return model
 
-validation_data = (valX,valY)
-
-# import matplotlib.pyplot as plt
-try:
-    model.load_weights('./lstm_weights_last.h5')
-    print("Loaded model weights from disk")
-except:
-    # Fit the model
-history = model.fit(trainX, trainY, epochs=400, batch_size=4, validation_data=validation_data,
-                  verbose=1) #validation - 과적합 방지 & loss 가 작을수록 좋은 모델이니 그것을 선택함
-
-plt.plot(history.history['loss'], label='Training loss')
-plt.plot(history.history['val_loss'], label='Validation loss')
-plt.legend()
-plt.show()
-
-# prediction
-prediction = model.predict(testX)
-print(prediction.shape, testY.shape)
-
-y_pred = np.squeeze(prediction)
-
-testY_original = np.squeeze(testY)
-
-# plotting
-plt.figure(figsize=(14, 5))
-
-# plot original 'returns' prices
-plt.plot(dates, original_returns, color='green', label='Original Returns')
-
-# plot actual vs predicted
-plt.plot(test_dates[seq_len:], testY_original, color='blue', label='Actual Returns')
-plt.plot(test_dates[seq_len:], y_pred, color='red', linestyle='--', label='Predicted Returns')
-plt.xlabel('Date')
-plt.ylabel('Returns')
-plt.title('Original, Actual and Predicted Returns')
-plt.legend()
-plt.show()
-
-len(y_pred)
-
-# Calculate the start and end indices for the zoomed plot
-zoom_start = len(test_dates) - 50
-zoom_end = len(test_dates)
-
-# Create the zoomed plot
-plt.figure(figsize=(14, 5))
-
-# Adjust the start index for the testY_original and y_pred arrays
-adjusted_start = zoom_start - seq_len
-
-plt.plot(test_dates[zoom_start:zoom_end],
-         testY_original[adjusted_start:zoom_end - zoom_start + adjusted_start],
-         color='blue',
-         label='Actual Returns')
-
-plt.plot(test_dates[zoom_start:zoom_end],
-         y_pred[adjusted_start:zoom_end - zoom_start + adjusted_start ],
-         color='red',
-         linestyle='--',
-         label='Predicted Returns')
-
-plt.xlabel('Date')
-plt.ylabel('Returns')
-plt.title('Zoomed In Actual vs Predicted Returns')
-plt.legend()
-plt.show()
-
-from sklearn.metrics import mean_squared_error
-rmse = np.sqrt(mean_squared_error(testY_original, y_pred))
-print("RMSE: %f" % (rmse))
-# RMSE: 0.160966 ..?gg
-# RMSE: 0.139228 옹예
-
-from sklearn.metrics import mean_absolute_error
-mae = mean_absolute_error(testY_original, y_pred)
-print("MAE: %f" % (mae))
-
-model.save('ks_lstm_last.h5')
-
-"""#추가적으로 할일 (0822)
-- 상관관계가 높은 변수 제외  
-다중공선성 문제를 방지 -> 유사도 높은 것들은 하나의 값만 넣기
-- 종속변수 정규화(xgboost) -> 파라미터/ standard는 오히려 성능 x
-- 앙상블 (참고: https://knowallworld.tistory.com/399)
-  - ligthgbm이랑 해보자
-
-"""
 
 # 모델 불러오기
 xgb_model = joblib.load(open(filename, 'rb'))
@@ -277,7 +62,7 @@ raw_train
 
 df = raw_train.loc[:,'close']
 
-!pip install pykalman
+# !pip install pykalman
 
 from pykalman import KalmanFilter
 kf = KalmanFilter(transition_matrices = [1],
@@ -316,155 +101,4 @@ raw_train = raw_train.astype('float')
 raw_train.to_csv("adj_raw_train.csv")
 
 raw_train = raw_train.reset_index()
-
-
-
-"""##  Prophet
-- https://facebook.github.io/prophet/docs/quick_start.html
-"""
-
-import pandas as pd
-raw_train = pd.read_csv("/content/drive/MyDrive/adj_raw_train.csv")
-
-df = pd.DataFrame()
-
-df
-
-df['DS'] = raw_train['date']
-
-df['Y'] = raw_train['target']
-
-df.columns = ['ds','y']
-
-from prophet import Prophet
-m = Prophet()
-m.fit(df)
-
-future = m.make_future_dataframe(periods=365)
-future.tail()
-
-forecast = m.predict(future)
-forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail()
-
-fig1 = m.plot(forecast)
-
-from prophet.plot import plot_plotly, plot_components_plotly
-
-plot_plotly(m, forecast)
-
-fig2 = m.plot_components(forecast)
-
-# plot_components_plotly(m, forecast)
-
-"""- 수익률로만 따지니까 이상하게 나와서 정규화 다시 해봄.."""
-
-data = raw_train['target'].values
-plt.figure(figsize=(12, 8))
-plt.plot(data)
-plt.show()
-
-# import plotly.graph_objects as go
-# fig = go.Figure()
-# fig.update_traces(x=data, selector=dict(type='ohlc'))
-# fig.update_traces(value=data, selector=dict(type='indicator'))
-
-from sklearn.preprocessing import MinMaxScaler
-import numpy as np
-
-data = np.array(data).reshape(-1,1)    # 표준화를 하기 위해 사이즈를 (-1,1)로 조정
-
-scaler = MinMaxScaler(feature_range=(0, 1))
-scaled = scaler.fit_transform(data)
-scaled
-
-df.drop('y', axis=1, inplace=True)
-
-df['y'] = scaled
-
-df
-
-from prophet import Prophet
-
-train_df = df.head(-246)
-
-m = Prophet(seasonality_mode='additive')
-m.fit(train_df)
-
-fig1 = m.plot(forecast, figsize=(20,10))
-
-plt.plot(forecast.iloc[-246:,:].yhat,'r', label='prediction')
-plt.plot(test_df.y,'b', label='original')
-plt.xlabel('Num')
-plt.ylabel('Target')
-plt.legend()
-plt.title('Original vs Test')
-plt.show()
-
-"""달라지는게 없었다..."""
-
-future_df = df.copy()
-future_df = m.make_future_dataframe(periods=246)
-future_df.rename(columns={'date':'ds'},inplace=True)
-forecast = m.predict(future_df)
-
-from prophet import Prophet
-
-
-train_df = df.head(-246)
-
-m = Prophet(seasonality_mode='additive')
-m.fit(train_df)
-
-future_df = df.copy()
-future_df = m.make_future_dataframe(periods=246)
-future_df.rename(columns={'date':'ds'},inplace=True)
-forecast = m.predict(future_df)
-
-fig1 = m.plot(forecast, figsize=(20,10))
-
-test_df = df.tail(246)
-
-test_df.y
-
-forecast.iloc[-246:,:].yhat
-
-plt.plot(forecast.iloc[-246:,:].yhat,'r', label='prediction')
-plt.plot(test_df.y,'b', label='original')
-plt.xlabel('Num')
-plt.ylabel('Target')
-plt.legend()
-plt.title('Original vs Test')
-plt.show()
-
-# prophet 모듈 세팅
-from prophet import Prophet
-
-# Day 단위로 데이터가 구성되어 있으므로, 일 단위 주기성 활성화
-model = Prophet(daily_seasonality=True)
-
-# 데이터 학습 시작 -> 기계학습
-model.fit(df[['ds', 'y']].iloc[:-10])
-
-# 주가 예측 위한 날짜 데이터 세팅 -> 기존 데이터 + 향후 14일치 예측값
-future = model.make_future_dataframe(periods=10)
-
-# 주가 예측
-forecast = model.predict(future)
-
-# 필요한 컬럼만 보기
-forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(11)
-
-import matplotlib.pyplot as plt
-plt.plot(forecast.iloc[-246:,:].yhat,'r', label='prediction')
-plt.plot(df.iloc[-246:,:].y,'b', label='original')
-plt.xlabel('Index')
-plt.ylabel('Target')
-plt.legend()
-plt.title('Original vs Test')
-plt.show()
-
-# 모델이 제공하는 시각화
-model.plot(forecast)
-
-"""- prophet 모델 gridsearch"""
 
