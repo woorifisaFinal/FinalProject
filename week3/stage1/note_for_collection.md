@@ -37,7 +37,7 @@
     - 저는 scaler를 output dir에 저장해 놓았습니다.
 - utilty 폴더 존재 이유 : 학습, 추론에 주도적인 역할은 아닌, 여러 잡다한 코드들을 모아놓는 곳, logging, seed 설정 코드 등 (저는 metric 코드도 모아놓았습니다.)
 - models에 user별 폴더가 존재하지 않는 이유 : 처음에는 lstm.py, xgboost.py로 해서 user_name과 index_name(task_name)에 맞춰 모델을 생성해주는 걸로 생각해서 그랬습니다. 그러자니 시간이 오래 걸릴 것 같아서 우선은 각 파일별로 앞에 user_name을 적어주었습니다. -> 따라서, 같이 생각해볼 부분입니다.
-
+ 
 # 진행 상황
 - BG
     - 폴더 경로만 생성 완료
