@@ -6,9 +6,10 @@ import pandas as pd
 from stage1.data import DataPreprocess
 
 ## 모델 불러오기 위한 함수
-from stage1.models import create_jw_model
+from stage1.models import build_rnn_model
 
 from os.path import join as opj
+from stage1.utils import get_logger
 
 ## 환경설정 관련 라이브러리
 import argparse
@@ -16,6 +17,7 @@ import importlib
 import yaml
 from types import SimpleNamespace
 import sys
+import numpy as np
 
 # pyyaml docs : https://pyyaml.org/wiki/PyYAMLDocumentation
 # Ref : https://github.com/ybabakhin/kaggle-feedback-effectiveness-1st-place-solution/blob/main/train.py
@@ -35,7 +37,7 @@ for k, v in cfg.items():
 cfg = SimpleNamespace(**cfg)
 # print(cfg)
 
-
+logger = get_logger(cfg.base)
 
 def infer(cfg):
     """
@@ -43,7 +45,7 @@ def infer(cfg):
     """
     ##### 데이터 불러오기
 
-    y_da  = DataPreprocess(cfg).load_data()
+    x_data, y_data = DataPreprocess(cfg).load_data(logger)
 
     ##### 모델 불러오기
 
@@ -59,8 +61,8 @@ def infer(cfg):
 
     # 추가.. 예측 결과 저장 (stage2에서 쓰도록)
     import pickle
-    with open(opj(cfg.base.output_dir, "prediction_22.pkl"), 'rb') as f:
-        pickle.dump(prediction, f)
+    with open(opj(cfg.base.output_dir, "prediction_22.pkl"), 'wb') as f:
+        pickle.dump(preds, f)
         
 
 if __name__=="__main__":

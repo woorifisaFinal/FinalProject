@@ -1,7 +1,6 @@
 
 
 
-# paddleocr과 yolox logger 활용법 배우기?
 
 import logging
 from os.path import join as opj
@@ -11,14 +10,15 @@ import random
 import os
 
 __all__ = ['seed_everything','get_logger','scaler','get_week_of_month','rmse','smape'] 
+
 def seed_everything(seed):
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-# cfg_base로 바꾸기
+# paddleocr과 yolox logger 활용법 배우기?
 def get_logger(cfg_base):
-
+    
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     handler1 = logging.StreamHandler()

@@ -5,28 +5,20 @@
 
 # 가장 기본적인 설정들 모아놓은 것
 base:
-  exp_name: exp_01
+
   stage_name: asset # asset(stage1) or portfolio(stage2)
-  index_name: ^BVSP # ^BVSP : 브라질,  ^TWII : 대만, ^BSESN : 인도
-  model_name: xgboost # LSTM, xgboost
-  user_name: jw # bg: 병근, tw: 태완, hs: 하성, jw: 지우, jh: 주혁, sm: 수민  
+  task_name: bond # nasdaq ..? 쓰고 싶은 약어 선정,  코스피 : ks
+  model_name: LSTM # LSTM, xgboost
+  user_name: tw # bg: 병근, tw: 태완, hs: 하성, jw: 지우, jh: 주혁, sm: 수민  
   seed: 813
-  data_dir: stage1/data/jw # user_name 
-  output_dir: stage1/output/jw # user_name
+  data_dir: stage1/data/tw # user_name 
+  output_dir: stage1/output/tw # user_name
   
 
 data:
   lookback_window: 10 #  look back period 5 21 42
   lookahead_window: 1 # 62 # 5 3개월 후로 고정되어 있으므로... 62는 장 개장일 기준으로 3개월 후한 첫 번째 값의 간격. 즉 17.01.02-> 17.04.03 사이에 62개
-  y_form: ratio # value #
-  feature_list:
-    - Open
-    - High
-    - Low
-    - Close # 수익률 계산을 위해 혹은 종가로 사용하기 위해서라도 반드시 포함되어야 한다.
-    - HLmean # H + L / 2
-    - OCmean # O + C / 2
-    - Volume
+  #feature_list:
 
 
 train:
@@ -35,8 +27,7 @@ train:
   end_date: 2020-12-31
   use_derive_vairable: true
 
-  #training setting:
-  verbose: 2
+  
 
 
 valid:

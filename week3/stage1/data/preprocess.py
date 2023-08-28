@@ -22,10 +22,10 @@ class DataPreprocess:
     user_name별, model_name별 정리 필요
     """
 
-    def __init__(self, cfg, logger=None):
+    def __init__(self, cfg):
         self.cfg = cfg
-        self.logger = logger
-    def load_data(self):
+        # self.logger = logger
+    def load_data(self, logger=None):
         
         if self.cfg.base.user_name == "jw":
             """JW_KS_LSTM_model.ipynb
@@ -180,21 +180,35 @@ class DataPreprocess:
 
             
 
-
-            ### EDA
-
-            # train.query("Volume<10") Volume이 0인 경우 확인 필요
-            # label은 Scaling 안하는 것인가? Close
-
-
-            # FIRST DAY, LAST DAY
-            # train.first_day_of_month.min(), train.first_day_of_month.max()
-
-            ### 학습 데이터 생성
-            x_data, y_data = jh_make_data(train, self.cfg.data)
+            if self.cfg.base.mode == 'infer':
+                
+                test = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.test.start_date, self.cfg.test.end_date).reset_index()
+                x_data, y_data = jh_make_data(test, self.cfg.data)
+                
+                logger.info(f"!!Valid data infoi!! \n  x_data.shape : {x_data.shape} \t y_data.shape : {y_data.shape}")
+                # 학습 때 활용했던 mn, sd 그대로 사용
+                ### STANDARIZE
+                x_data,y_data = scaler(x_data,y_data, self.cfg.base,is_train=False)
 
 
-            return x_data, y_data
+
+                return x_data, y_data
+            else:
+                train = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.train.start_date, self.cfg.train.end_date).reset_index()
+                # valid 활용을 사실 안함...
+                # valid = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.valid.start_date, self.cfg.valid.end_date).reset_index()
+
+                logger.info(f"train data start date : {train.Date.min()} end date : {train.Date.max()}")
+                ### 학습 데이터 생성
+                x_data, y_data = jh_make_data(train, self.cfg.data)
+                logger.info(f"!!Train data infoi!! \n  x_data.shape : {x_data.shape} \t y_data.shape : {y_data.shape}")
+                ### STANDARIZE
+                x_data,y_data = scaler(x_data,y_data, self.cfg.base, is_train=True)
+
+                X_train, X_valid, y_train, y_valid = train_test_split(x_data, y_data, shuffle=True,random_state=self.cfg.base.seed, test_size=0.2)
+
+                return X_train, X_valid, y_train, y_valid
+
 
 
 def jh_make_features(df_):

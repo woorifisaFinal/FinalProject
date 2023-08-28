@@ -53,21 +53,8 @@ def train(cfg):
     """
     ##### 데이터 불러오기
     
-    train = pdr.get_data_yahoo(cfg.base.index_name, cfg.train.start_date, cfg.train.end_date).reset_index()
-    valid = pdr.get_data_yahoo(cfg.base.index_name, cfg.valid.start_date, cfg.valid.end_date).reset_index()
-    # test = pdr.get_data_yahoo(cfg.base.index_name, cfg.test.start_date, cfg.test.end_date).reset_index()
+    X_train, X_valid, y_train, y_valid = DataPreprocess(cfg).load_data(logger)
 
-    logger.info(f"train data start date : {train.Date.min()} end date : {train.Date.max()}")
-
-    x_data, y_data = DataPreprocess(cfg).load_data()
-
-    logger.info(f"!!Train data infoi!! \n  x_data.shape : {x_data.shape} \t y_data.shape : {y_data.shape}")
-
-
-    ### STANDARIZE
-    x_data,y_data = scaler(x_data,y_data, cfg.base, is_train=True)
-
-    X_train, X_valid, y_train, y_valid = train_test_split(x_data, y_data, shuffle=True,random_state=cfg.base.seed, test_size=0.2)
     ##### 모델 불러오기
 
     model = build_rnn_model(cfg)
