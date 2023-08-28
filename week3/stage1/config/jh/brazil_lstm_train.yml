@@ -8,11 +8,11 @@ base:
   exp_name: exp_01
   stage_name: asset # asset(stage1) or portfolio(stage2)
   index_name: ^BVSP # ^BVSP : 브라질,  ^TWII : 대만, ^BSESN : 인도
-  model_name: xgboost # LSTM, xgboost
-  user_name: jw # bg: 병근, tw: 태완, hs: 하성, jw: 지우, jh: 주혁, sm: 수민  
+  model_name: LSTM # GRU, LSTM, xgboost
+  user_name: jh # bg: 병근, tw: 태완, hs: 하성, jw: 지우, jh: 주혁, sm: 수민  
   seed: 813
-  data_dir: stage1/data/jw # user_name 
-  output_dir: stage1/output/jw # user_name
+  data_dir: stage1/data/jh # user_name 
+  output_dir: stage1/output/jh # user_name
   
 
 data:
@@ -27,7 +27,16 @@ data:
     - HLmean # H + L / 2
     - OCmean # O + C / 2
     - Volume
-
+    - ATR
+    - Parabolic SAR
+    - MACD
+    - SMA
+    - EMA
+    - RSI
+    - day
+    - month
+    - dayofweek
+    - weekofmonth
 
 train:
   #dataset:

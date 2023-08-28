@@ -2,10 +2,19 @@
 
 from os.path import join as opj
 import pandas as pd
+import numpy as np
+from tqdm.auto import tqdm
 
 import ta
 
 from stage1.utils import get_week_of_month
+
+from sklearn.model_selection import train_test_split
+# yahoo financial, unofficial way, rate limit
+from pandas_datareader import data as pdr
+import yfinance as yf
+yf.pdr_override()
+
 
 class DataPreprocess:
     """
@@ -13,8 +22,9 @@ class DataPreprocess:
     user_name별, model_name별 정리 필요
     """
 
-    def __init__(self, cfg):
+    def __init__(self, cfg, logger=None):
         self.cfg = cfg
+        self.logger = logger
     def load_data(self):
         
         if self.cfg.base.user_name == "jw":
@@ -168,9 +178,23 @@ class DataPreprocess:
 
         elif self.cfg.base.user_name == "jh":
 
-            df
-            jh_make_data(df, self.cfg.data)
+            
 
+
+            ### EDA
+
+            # train.query("Volume<10") Volume이 0인 경우 확인 필요
+            # label은 Scaling 안하는 것인가? Close
+
+
+            # FIRST DAY, LAST DAY
+            # train.first_day_of_month.min(), train.first_day_of_month.max()
+
+            ### 학습 데이터 생성
+            x_data, y_data = jh_make_data(train, self.cfg.data)
+
+
+            return x_data, y_data
 
 
 def jh_make_features(df_):
