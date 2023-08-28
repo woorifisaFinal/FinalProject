@@ -61,7 +61,7 @@ def infer(cfg):
 
     # 추가.. 예측 결과 저장 (stage2에서 쓰도록)
     import pickle
-    with open(opj(cfg.base.output_dir, "prediction_22.pkl"), 'wb') as f:
+    with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
         pickle.dump(preds, f)
         
 
