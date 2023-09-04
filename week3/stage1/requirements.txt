@@ -7,12 +7,14 @@ pandas
 sklearn
 matplotlib
 
+#### 데이터
 ta
 yfinance
 pandas-datareader
 
+#### 모델
 tensorflow
-
+xgboost
 
 # JW
 pykalman

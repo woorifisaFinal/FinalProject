@@ -5,9 +5,9 @@
 
 # 가장 기본적인 설정들 모아놓은 것
 base:
-
+  mode: infer
   stage_name: asset # asset(stage1) or portfolio(stage2)
-  task_name: nd # nasdaq ..? 쓰고 싶은 약어 선정,  코스피 : ks
+  task_name: nikkei # nasdaq ..? 쓰고 싶은 약어 선정,  코스피 : ks
   model_name: LSTM # LSTM, xgboost
   user_name: sm # bg: 병근, tw: 태완, hs: 하성, jw: 지우, jh: 주혁, sm: 수민  
   seed: 813

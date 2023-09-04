@@ -1,4 +1,7 @@
-def nikkei_xgb():
+
+from os.path import join as opj
+
+def nikkei_xgb(cfg):
   import pandas as pd
   import numpy as np
   import yfinance as yf
@@ -7,25 +10,25 @@ def nikkei_xgb():
   import joblib
 
   ##FOR LOCAL
-  train = pd.read_csv('data/nikkei_train.csv')
-  val = pd.read_csv('data/nikkei_val.csv')
-  test = pd.read_csv('data/nikkei_test.csv')
-  topix = pd.read_csv('data/topix_2017_2021.csv')
-  usd = pd.read_csv('data/usd_2017-2021.csv')
+  train = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_train.csv'))
+  val = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_val.csv'))
+  test = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_test.csv'))
+  topix = pd.read_csv(opj(cfg.base.data_dir, 'topix_2017_2021.csv'))
+  usd = pd.read_csv(opj(cfg.base.data_dir, 'usd_2017-2021.csv'))
   unemp = pd.read_csv(
-    'data/unemployment_2017_2023.csv')
-  topix_test = pd.read_csv('data/topix_2022.csv')
-  usd_test = pd.read_csv('data/usd_2022.csv')
+    opj(cfg.base.data_dir, 'unemployment_2017_2023.csv'))
+  topix_test = pd.read_csv(opj(cfg.base.data_dir, 'topix_2022.csv'))
+  usd_test = pd.read_csv(opj(cfg.base.data_dir, 'usd_2022.csv'))
   ##FOR PROJECT
-  # train = pd.read_csv('../data/sm/nikkei_train.csv')
-  # val = pd.read_csv('../data/sm/nikkei_val.csv')
-  # test = pd.read_csv('../data/sm/nikkei_test.csv')
-  # topix = pd.read_csv('../data/sm/topix_2017_2021.csv')
-  # usd = pd.read_csv('../data/sm/usd_2017-2021.csv')
+  # train = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_train.csv'))
+  # val = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_val.csv'))
+  # test = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_test.csv'))
+  # topix = pd.read_csv(opj(cfg.base.data_dir, 'topix_2017_2021.csv'))
+  # usd = pd.read_csv(opj(cfg.base.data_dir, 'usd_2017-2021.csv)')
   # unemp = pd.read_csv(
-  #   '../data/sm/unemployment_2017_2023.csv')
-  # topix_test = pd.read_csv('../data/sm/topix_2022.csv')
-  # usd_test = pd.read_csv('../data/sm/usd_2022.csv')
+  #   opj(cfg.base.data_dir, 'unemployment_2017_2023.csv'))
+  # topix_test = pd.read_csv(opj(cfg.base.data_dir, 'topix_2022.csv'))
+  # usd_test = pd.read_csv(opj(cfg.base.data_dir, 'usd_2022.csv'))
   #################################################################
   topix['date'] = pd.to_datetime(topix['date'])
   topix = topix.set_index('date')
@@ -191,7 +194,7 @@ def nikkei_xgb():
   joblib.dump(xgb_model, './models/nikkei_xgb.pkl')
 
 
-def nikkei_lstm():
+def nikkei_lstm(cfg):
   import pandas as pd
   import numpy as np
   import yfinance as yf
@@ -200,25 +203,25 @@ def nikkei_lstm():
   import joblib
 
   ##FOR LOCAL
-  # train = pd.read_csv('data/nikkei_train.csv')
-  # val = pd.read_csv('data/nikkei_val.csv')
-  # test = pd.read_csv('data/nikkei_test.csv')
-  # topix = pd.read_csv('data/topix_2017_2021.csv')
-  # usd = pd.read_csv('data/usd_2017-2021.csv')
+  # train = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_train.csv'))
+  # val = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_val.csv'))
+  # test = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_test.csv'))
+  # topix = pd.read_csv(opj(cfg.base.data_dir, 'topix_2017_2021.csv'))
+  # usd = pd.read_csv(opj(cfg.base.data_dir, 'usd_2017-2021.csv)')
   # unemp = pd.read_csv(
-  #   'data/unemployment_2017_2023.csv')
-  # topix_test = pd.read_csv('data/topix_2022.csv')
-  # usd_test = pd.read_csv('data/usd_2022.csv')
+  #   opj(cfg.base.data_dir, 'unemployment_2017_2023.csv'))
+  # topix_test = pd.read_csv(opj(cfg.base.data_dir, 'topix_2022.csv'))
+  # usd_test = pd.read_csv(opj(cfg.base.data_dir, 'usd_2022.csv'))
   ##FOR PROJECT
-  train = pd.read_csv('../data/sm/nikkei_train.csv')
-  val = pd.read_csv('../data/sm/nikkei_val.csv')
-  test = pd.read_csv('../data/sm/nikkei_test.csv')
-  topix = pd.read_csv('../data/sm/topix_2017_2021.csv')
-  usd = pd.read_csv('../data/sm/usd_2017-2021.csv')
+  train = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_train.csv'))
+  val = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_val.csv'))
+  test = pd.read_csv(opj(cfg.base.data_dir, 'nikkei_test.csv'))
+  topix = pd.read_csv(opj(cfg.base.data_dir, 'topix_2017_2021.csv'))
+  usd = pd.read_csv(opj(cfg.base.data_dir, 'usd_2017-2021.csv'))
   unemp = pd.read_csv(
-    '../data/sm/unemployment_2017_2023.csv')
-  topix_test = pd.read_csv('../data/sm/topix_2022.csv')
-  usd_test = pd.read_csv('../data/sm/usd_2022.csv')
+    opj(cfg.base.data_dir, 'unemployment_2017_2023.csv'))
+  topix_test = pd.read_csv(opj(cfg.base.data_dir, 'topix_2022.csv'))
+  usd_test = pd.read_csv(opj(cfg.base.data_dir, 'usd_2022.csv'))
   #################################################################
   _ = pd.concat([train, val, test])
   dates = pd.to_datetime(_['date'])

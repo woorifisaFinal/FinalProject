@@ -1,6 +1,7 @@
 
+from os.path import join as opj
 
-def nasdaq_xgb():
+def nasdaq_xgb(cfg):
   import pandas as pd
   import numpy as np
   import yfinance as yf
@@ -9,30 +10,30 @@ def nasdaq_xgb():
   import joblib
 
   # FOR LOCAL
-  # train = pd.read_csv('data/nasdaq_train.csv')
-  # val = pd.read_csv('data/nasdaq_val.csv')
-  # test = pd.read_csv('data/nasdaq_test.csv')
-  # tips = pd.read_csv('data/tips_2017_2021.csv')
-  # cpi = pd.read_csv('data/cpi_2017_2021.csv')
-  # vix = pd.read_csv('data/vix_2017_2021.csv')
-  # sp = pd.read_csv('data/sp500.csv')
-  # rut = pd.read_csv('data/russel.csv')
-  # cpi_test = pd.read_csv('data/cpi_2022.csv')
-  # tips_test = pd.read_csv('data/tips_2022.csv')
-  # vix_test = pd.read_csv('data/vix_2022.csv')
+  # train = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_train.csv'))
+  # val = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_val.csv'))
+  # test = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_test.csv'))
+  # tips = pd.read_csv(opj(cfg.base.data_dir, 'tips_2017_2021.csv'))
+  # cpi = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2017_2021.csv'))
+  # vix = pd.read_csv(opj(cfg.base.data_dir, 'vix_2017_2021.csv'))
+  # sp = pd.read_csv(opj(cfg.base.data_dir, 'sp500.csv'))
+  # rut = pd.read_csv(opj(cfg.base.data_dir, 'russel.csv'))
+  # cpi_test = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2022.csv'))
+  # tips_test = pd.read_csv(opj(cfg.base.data_dir, 'tips_2022.csv'))
+  # vix_test = pd.read_csv(opj(cfg.base.data_dir, 'vix_2022.csv'))
 
   ## FOR PROJECT
-  train = pd.read_csv('data/nasdaq_train.csv')
-  val = pd.read_csv('data/nasdaq_val.csv')
-  test = pd.read_csv('data/nasdaq_test.csv')
-  tips = pd.read_csv('../data/sm/tips_2017_2021.csv')
-  cpi = pd.read_csv('../data/sm/cpi_2017_2021.csv')
-  vix = pd.read_csv('../data/sm/vix_2017_2021.csv')
-  sp = pd.read_csv('../data/sm/sp500.csv')
-  rut = pd.read_csv('../data/sm/russel.csv')
-  cpi_test = pd.read_csv('../data/sm/cpi_2022.csv')
-  tips_test = pd.read_csv('../data/sm/tips_2022.csv')
-  vix_test = pd.read_csv('../data/sm/vix_2022.csv')
+  train = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_train.csv'))
+  val = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_val.csv'))
+  test = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_test.csv'))
+  tips = pd.read_csv(opj(cfg.base.data_dir, 'tips_2017_2021.csv'))
+  cpi = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2017_2021.csv'))
+  vix = pd.read_csv(opj(cfg.base.data_dir, 'vix_2017_2021.csv'))
+  sp = pd.read_csv(opj(cfg.base.data_dir, 'sp500.csv'))
+  rut = pd.read_csv(opj(cfg.base.data_dir, 'russel.csv'))
+  cpi_test = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2022.csv'))
+  tips_test = pd.read_csv(opj(cfg.base.data_dir, 'tips_2022.csv'))
+  vix_test = pd.read_csv(opj(cfg.base.data_dir, 'vix_2022.csv'))
 
   # tips, cpi, vix는 test csv가 따로 저장되어있고 sp,rut은 23년 최근까지 다 받아온 csv
 
@@ -201,7 +202,7 @@ def nasdaq_xgb():
 
   joblib.dump(xgb_model, './models/nasdaq_xgb.pkl')
 
-def nasdaq_lstm():
+def nasdaq_lstm(cfg):
   import pandas as pd
   import numpy as np
   import yfinance as yf
@@ -210,30 +211,30 @@ def nasdaq_lstm():
   import joblib
 
   ## FOR LOCAL
-  # train = pd.read_csv('data/nasdaq_train.csv')
-  # val = pd.read_csv('data/nasdaq_val.csv')
-  # test = pd.read_csv('data/nasdaq_test.csv')
-  # tips = pd.read_csv('data/tips_2017_2021.csv')
-  # cpi = pd.read_csv('data/cpi_2017_2021.csv')
-  # vix = pd.read_csv('data/vix_2017_2021.csv')
-  # sp = pd.read_csv('data/sp500.csv')
-  # rut = pd.read_csv('data/russel.csv')
-  # cpi_test = pd.read_csv('data/cpi_2022.csv')
-  # tips_test = pd.read_csv('data/tips_2022.csv')
-  # vix_test = pd.read_csv('data/vix_2022.csv')
+  # train = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_train.csv'))
+  # val = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_val.csv'))
+  # test = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_test.csv'))
+  # tips = pd.read_csv(opj(cfg.base.data_dir, 'tips_2017_2021.csv'))
+  # cpi = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2017_2021.csv'))
+  # vix = pd.read_csv(opj(cfg.base.data_dir, 'vix_2017_2021.csv'))
+  # sp = pd.read_csv(opj(cfg.base.data_dir, 'sp500.csv'))
+  # rut = pd.read_csv(opj(cfg.base.data_dir, 'russel.csv'))
+  # cpi_test = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2022.csv'))
+  # tips_test = pd.read_csv(opj(cfg.base.data_dir, 'tips_2022.csv'))
+  # vix_test = pd.read_csv(opj(cfg.base.data_dir, 'vix_2022.csv'))
 
   ## FOR PROJECT
-  train = pd.read_csv('data/nasdaq_train.csv')
-  val = pd.read_csv('data/nasdaq_val.csv')
-  test = pd.read_csv('data/nasdaq_test.csv')
-  tips = pd.read_csv('../data/sm/tips_2017_2021.csv')
-  cpi = pd.read_csv('../data/sm/cpi_2017_2021.csv')
-  vix = pd.read_csv('../data/sm/vix_2017_2021.csv')
-  sp = pd.read_csv('../data/sm/sp500.csv')
-  rut = pd.read_csv('../data/sm/russel.csv')
-  cpi_test = pd.read_csv('../data/sm/cpi_2022.csv')
-  tips_test = pd.read_csv('../data/sm/tips_2022.csv')
-  vix_test = pd.read_csv('../data/sm/vix_2022.csv')
+  train = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_train.csv'))
+  val = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_val.csv'))
+  test = pd.read_csv(opj(cfg.base.data_dir, 'nasdaq_test.csv'))
+  tips = pd.read_csv(opj(cfg.base.data_dir, 'tips_2017_2021.csv'))
+  cpi = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2017_2021.csv'))
+  vix = pd.read_csv(opj(cfg.base.data_dir, 'vix_2017_2021.csv'))
+  sp = pd.read_csv(opj(cfg.base.data_dir, 'sp500.csv'))
+  rut = pd.read_csv(opj(cfg.base.data_dir, 'russel.csv'))
+  cpi_test = pd.read_csv(opj(cfg.base.data_dir, 'cpi_2022.csv'))
+  tips_test = pd.read_csv(opj(cfg.base.data_dir, 'tips_2022.csv'))
+  vix_test = pd.read_csv(opj(cfg.base.data_dir, 'vix_2022.csv'))
 
   # tips, cpi, vix는 test csv가 따로 저장되어있고 sp,rut은 23년 최근까지 다 받아온 csv
 

@@ -1,4 +1,7 @@
-def ftse_xgb():
+
+from os.path import join as opj
+
+def ftse_xgb(cfg):
   import pandas as pd
   import numpy as np
   import yfinance as yf
@@ -16,14 +19,14 @@ def ftse_xgb():
   # retail = pd.read_csv('data/retail_sales_uk.csv')
   # unemp = pd.read_csv('data/unemployment_uk.csv')
   ##FOR PROJECT
-  train = pd.read_csv('../data/sm/ftse_train.csv')
-  val = pd.read_csv('../data/sm/ftse_val.csv')
-  test = pd.read_csv('../data/sm/ftse_test.csv')
-  tips = pd.read_csv('../data/sm/tips_uk_2017_2022.csv')
-  cpi = pd.read_csv('../data/sm/cpi_uk.csv')
-  euro = pd.read_csv('../data/sm/euro_2017_2022.csv')
-  retail = pd.read_csv('../data/sm/retail_sales_uk.csv')
-  unemp = pd.read_csv('../data/sm/unemployment_uk.csv')
+  train = pd.read_csv(opj(cfg.base.data_dir, 'ftse_train.csv'))
+  val = pd.read_csv(opj(cfg.base.data_dir, 'ftse_val.csv'))
+  test = pd.read_csv(opj(cfg.base.data_dir, 'ftse_test.csv'))
+  tips = pd.read_csv(opj(cfg.base.data_dir, 'tips_uk_2017_2022.csv'))
+  cpi = pd.read_csv(opj(cfg.base.data_dir, 'cpi_uk.csv'))
+  euro = pd.read_csv(opj(cfg.base.data_dir, 'euro_2017_2022.csv'))
+  retail = pd.read_csv(opj(cfg.base.data_dir, 'retail_sales_uk.csv'))
+  unemp = pd.read_csv(opj(cfg.base.data_dir, 'unemployment_uk.csv'))
   #################################################################
   tips['date'] = pd.to_datetime(tips['date'])
   tips = tips.set_index('date')
@@ -249,10 +252,10 @@ def ftse_xgb():
   xgb_model = XGBRegressor(n_estimators=1000, max_depth=5)
 
   xgb_model.fit(X_train, y_train, eval_metric='rmse', eval_set=[(X_val, y_val)])
-  joblib.dump(xgb_model, './models/ftse_xgb.pkl')
+  joblib.dump(xgb_model, opj(cfg.base.output_dir, 'models/ftse_xgb.pkl'))
 
 
-def ftse_lstm():
+def ftse_lstm(cfg):
   import pandas as pd
   import numpy as np
   import yfinance as yf
@@ -270,14 +273,14 @@ def ftse_lstm():
   # retail = pd.read_csv('data/retail_sales_uk.csv')
   # unemp = pd.read_csv('data/unemployment_uk.csv')
   ##FOR PROJECT
-  train = pd.read_csv('../data/sm/ftse_train.csv')
-  val = pd.read_csv('../data/sm/ftse_val.csv')
-  test = pd.read_csv('../data/sm/ftse_test.csv')
-  tips = pd.read_csv('../data/sm/tips_uk_2017_2022.csv')
-  cpi = pd.read_csv('../data/sm/cpi_uk.csv')
-  euro = pd.read_csv('../data/sm/euro_2017_2022.csv')
-  retail = pd.read_csv('../data/sm/retail_sales_uk.csv')
-  unemp = pd.read_csv('../data/sm/unemployment_uk.csv')
+  train = pd.read_csv(opj(cfg.base.data_dir, 'ftse_train.csv'))
+  val = pd.read_csv(opj(cfg.base.data_dir, 'ftse_val.csv'))
+  test = pd.read_csv(opj(cfg.base.data_dir, 'ftse_test.csv'))
+  tips = pd.read_csv(opj(cfg.base.data_dir, 'tips_uk_2017_2022.csv'))
+  cpi = pd.read_csv(opj(cfg.base.data_dir, 'cpi_uk.csv'))
+  euro = pd.read_csv(opj(cfg.base.data_dir, 'euro_2017_2022.csv'))
+  retail = pd.read_csv(opj(cfg.base.data_dir, 'retail_sales_uk.csv'))
+  unemp = pd.read_csv(opj(cfg.base.data_dir, 'unemployment_uk.csv'))
   #################################################################
   _ = pd.concat([train, val, test])
   dates = pd.to_datetime(_['date'])
@@ -573,6 +576,6 @@ def ftse_lstm():
   optimizer = Adam(learning_rate=learning_rate)
   model.compile(optimizer=optimizer, loss='mse', metrics=['mae'])
   model.fit(trainX, trainY, epochs=30, batch_size=20, validation_data=(valX, valY))
-  joblib.dump(model, './models/ftse_lstm.pkl')
+  joblib.dump(model, opj(cfg.base.output_dir, 'models/ftse_lstm.pkl'))
 
 

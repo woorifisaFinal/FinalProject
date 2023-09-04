@@ -10,10 +10,13 @@ from xgboost import XGBRegressor
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 
+from os.path import join as opj
 
-def createlstm():
+__all__ = ["create_jw_lstm", "create_jw_xgboost"]
+
+def create_jw_lstm(cfg):
 # 데이터 불러오기
-    raw_train = pd.read_csv("adj_raw_train.csv")
+    raw_train = pd.read_csv(opj(cfg.base.data_dir, "adj_raw_train.csv"))
     raw_train['date'] = pd.to_datetime(raw_train['date'])
     dates = pd.to_datetime(raw_train['date'])
 
@@ -48,7 +51,7 @@ def createlstm():
     stock_data_scaled_test = scaler.transform(stock_data[n_validation:])
 
 
-    dump(scaler, open('./lstm_scaler.pkl', 'wb'))
+    dump(scaler, open(opj(cfg.base.output_dir,'lstm_scaler.pkl'), 'wb'))
 
     stock_data_target = raw_train[["target"]]
 
@@ -113,20 +116,23 @@ def createlstm():
     model.add(LSTM(32, return_sequences=False))
     model.add(Dense(trainY.shape[1]))
 
-
-    learning_rate = 0.001
-    optimizer = Adam(learning_rate=learning_rate)
-    model.compile(optimizer=optimizer, loss='mse')
-
-
-
-    model.fit(trainX, trainY, epochs=100, batch_size=4, validation_data=validation_data, verbose=2)
+    if cfg.base.mode == "train":
+        learning_rate = 0.001
+        optimizer = Adam(learning_rate=learning_rate)
+        model.compile(optimizer=optimizer, loss='mse')
 
 
-    model.save('jw_lstm_model')
 
-def createxgboost():
-    raw_train = pd.read_csv("adj_raw_train.csv")
+        model.fit(trainX, trainY, epochs=100, batch_size=4, validation_data=validation_data, verbose=2)
+
+
+        model.save(opj(cfg.base.output_dir,'jw_lstm_model'))
+    else:
+        model.load(opj(cfg.base.output_dir,'jw_lstm_model'))
+        return model.predit(valX), model.predict(testX)
+
+def create_jw_xgboost(cfg):
+    raw_train = pd.read_csv(opj(cfg.base.data_dir, "adj_raw_train.csv"))
     raw_train['date'] = pd.to_datetime(raw_train['date'])
 
     X, y = raw_train.iloc[:,:-1],raw_train.iloc[:,-1]
@@ -145,26 +151,36 @@ def createxgboost():
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=n_validation, random_state=123, shuffle=False)
 
 
-    xgb_model = XGBRegressor(n_estimators=500)
-
-    params = {'max_depth':[5,7], 'min_child_weight':[1,3], 'colsample_bytree':[0.5,0.75], 'learning_rate':[0.001,0.05]}
-    gridcv = GridSearchCV(xgb_model, param_grid=params, cv=5)
 
 
-    gridcv.fit(X_train, y_train, early_stopping_rounds=50, eval_metric='rmse',
-                eval_set=[(X_test, y_test), (X_val, y_val)])
+
+    if cfg.base.mode == "train":
+        xgb_model = XGBRegressor(n_estimators=500)
+
+        params = {'max_depth':[5,7], 'min_child_weight':[1,3], 'colsample_bytree':[0.5,0.75], 'learning_rate':[0.001,0.05]}
+        gridcv = GridSearchCV(xgb_model, param_grid=params, cv=5)
 
 
-    xgb_model = XGBRegressor(n_estimators=100,learning_rate=0.05, max_depth=7, min_child_weight=1, 
-                            colsample_bytree=0.75, reg_alpha=0.03)
-
-    xgb_model.fit(X_train, y_train, early_stopping_rounds=50, eval_metric='rmse', eval_set= [(X_train, y_train), 
-                                (X_val, y_val)])
+        gridcv.fit(X_train, y_train, early_stopping_rounds=50, eval_metric='rmse',
+                    eval_set=[(X_test, y_test), (X_val, y_val)])
 
 
-    # 모델 저장
-    filename = 'jw_xgboost_model.model'
-    joblib.dump(xgb_model, open(filename, 'wb'))
+        xgb_model = XGBRegressor(n_estimators=100,learning_rate=0.05, max_depth=7, min_child_weight=1, 
+                                colsample_bytree=0.75, reg_alpha=0.03)
 
 
-# createxgboost()
+        xgb_model.fit(X_train, y_train, early_stopping_rounds=50, eval_metric='rmse', eval_set= [(X_train, y_train), 
+                                    (X_val, y_val)])
+
+
+        # 모델 저장
+        filename = 'jw_xgboost_model.model'
+        joblib.dump(xgb_model, open(opj(cfg.base.output_dir,filename), 'wb'))
+
+    else:
+        filename = 'jw_xgboost_model.model'
+        with open(opj(cfg.base.output_dir, filename), 'rb') as f:
+            xgb_model = joblib.load(f)
+
+        # return xgb_model.predit(validation), xgb_model.predict(test)
+        return xgb_model.predict(test)
