@@ -3,11 +3,11 @@
 import pandas as pd
 
 ## 데이터 불러오기 위한 class
-from stage1.data import DataPreprocess
+# from stage1.data import DataPreprocess
 
 ## 모델 불러오기 위한 함수
 # from stage1.models import create_jw_model
-from stage1 import models
+from ..models import nasdaq
 
 from os.path import join as opj
 
@@ -90,8 +90,8 @@ def infer(cfg):
                 models.ftse_xgb(cfg)
         else:
             if cfg.base.model_name == "LSTM":
-                models.nasdaq_lstm(cfg)
-            
+                # models.nasdaq_lstm(cfg)
+                nasdaq.nasdaq_lstm(cfg)
             elif cfg.base.model_name == "xgboost":
                 models.nasdaq_xgb(cfg)
             
