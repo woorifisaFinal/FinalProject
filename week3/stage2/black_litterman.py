@@ -74,7 +74,8 @@ assert C.shape == (K,)
 k=0
 ER_k_100 = Pi + tau*Sigma.dot(P[None, k].T).dot(inv(P[None, k].dot(tau * Sigma).dot(P[None, k].T)).dot(Q[None, k] - P[None, k].dot(Pi)))
 w_k_100 = inv(Sigma).dot(ER_k_100)
-w_k_100 = pd.Series(w_k_100 / w_k_100.sum(), index=excess_returns.columns)
+w_k_100 = pd.Series(w_k_100 / w_k_100.sum(), index=e
+                    xcess_returns.columns)
 
 w_k_implied = w_mkt + (w_k_100 - w_mkt) * C[k]
 
