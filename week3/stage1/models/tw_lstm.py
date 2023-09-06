@@ -40,7 +40,7 @@ def bond_short():
               sequences.append((sequence, target))
       return sequences
 
-  sequence_length = 3  # 시퀀스 길이 설정
+  sequence_length = 10  # 시퀀스 길이 설정
   train_data = data[(data['날짜'].dt.year >= 2017) & (data['날짜'].dt.year <= 2021)]
   train_sequences = create_sequence_data(train_data, sequence_length)
   X_train = np.array([sequence for sequence, target in train_sequences])
@@ -121,7 +121,7 @@ def bond_long():
               sequences.append((sequence, target))
       return sequences
 
-  sequence_length = 3  # 시퀀스 길이 설정
+  sequence_length = 10  # 시퀀스 길이 설정
   train_data = data[(data['날짜'].dt.year >= 2017) & (data['날짜'].dt.year <= 2021)]
   train_sequences = create_sequence_data(train_data, sequence_length)
   X_train = np.array([sequence for sequence, target in train_sequences])
@@ -202,7 +202,7 @@ def us_bond_short():
               sequences.append((sequence, target))
       return sequences
 
-  sequence_length = 3  # 시퀀스 길이 설정
+  sequence_length = 10  # 시퀀스 길이 설정
   train_data = data[(data['날짜'].dt.year >= 2017) & (data['날짜'].dt.year <= 2021)]
   train_sequences = create_sequence_data(train_data, sequence_length)
   X_train = np.array([sequence for sequence, target in train_sequences])
@@ -282,7 +282,7 @@ def us_bond_long():
               sequences.append((sequence, target))
       return sequences
 
-  sequence_length = 3  # 시퀀스 길이 설정
+  sequence_length = 10  # 시퀀스 길이 설정
   train_data = data[(data['날짜'].dt.year >= 2017) & (data['날짜'].dt.year <= 2021)]
   train_sequences = create_sequence_data(train_data, sequence_length)
   X_train = np.array([sequence for sequence, target in train_sequences])

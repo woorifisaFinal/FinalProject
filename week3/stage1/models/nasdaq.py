@@ -1,6 +1,7 @@
 
 from os.path import join as opj
 
+__all__ = ["nasdaq_xgb", "nasdaq_lstm"]
 def nasdaq_xgb(cfg):
     if cfg.mode=="train":
         import pandas as pd
@@ -523,7 +524,7 @@ def nasdaq_lstm(cfg):
 
         from sklearn.preprocessing import StandardScaler
         
-        scaler = joblib.dump(opj(cfg.base.output_dir,'nasdaq_scaler.pkl'))
+        scaler = joblib.load(opj(cfg.base.output_dir,'nasdaq_scaler.pkl'))
 
         df = pd.concat([train, val])
 
@@ -568,7 +569,7 @@ def nasdaq_lstm(cfg):
         valX, valY = np.array(valX), np.array(valY)
         testX, testY = np.array(testX), np.array(testY)
 
-        modle = joblib.dump(opj(cfg.base.output_dir,'nasdaq_lstm.pkl'))
+        modle = joblib.load(opj(cfg.base.output_dir,'nasdaq_lstm.pkl'))
 
         val_pred = model.predict(valX)
         test_pred = model.predict(testX)
