@@ -1,15 +1,10 @@
-#### yaml 사용 규칙
-#  변수명 다음에 클론(:) 넣으면 dictionary의 key가 된다
-#  변수명과 클론(:) 사이에 띄어쓰기를 하지 않고 값과는 한 번 띄어쓴다. ex. 키: 값
-#  들여쓰기는 띄어쓰기 두 칸 
 
-# 가장 기본적인 설정들 모아놓은 것
 base:
   mode: infer
   stage_name: asset # asset(stage1) or portfolio(stage2)
   task_name: ftse # ftse
   model_name: LSTM # LSTM, xgboost
-  user_name: sm # bg: 병근, tw: 태완, hs: 하성, jw: 지우, jh: 주혁, sm: 수민  
+  user_name: sm 
   seed: 813
   data_dir: stage1/data/sm # user_name 
   output_dir: stage1/output/sm # user_name
@@ -17,7 +12,7 @@ base:
 
 data:
   lookback_window: 10 #  look back period 5 21 42
-  lookahead_window: 1 # 62 # 5 3개월 후로 고정되어 있으므로... 62는 장 개장일 기준으로 3개월 후한 첫 번째 값의 간격. 즉 17.01.02-> 17.04.03 사이에 62개
+  lookahead_window: 1 # 62 # 
   #feature_list:
 
 

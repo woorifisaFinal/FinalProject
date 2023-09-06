@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from tqdm.auto import tqdm
 
+
 import ta
 
 from stage1.utils import get_week_of_month
@@ -181,19 +182,20 @@ class DataPreprocess:
             
 
             if self.cfg.base.mode == 'infer':
-                
+                from stage1.utils import scaler
                 test = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.test.start_date, self.cfg.test.end_date).reset_index()
                 x_data, y_data = jh_make_data(test, self.cfg.data)
                 
                 logger.info(f"!!Valid data infoi!! \n  x_data.shape : {x_data.shape} \t y_data.shape : {y_data.shape}")
                 # 학습 때 활용했던 mn, sd 그대로 사용
                 ### STANDARIZE
-                x_data,y_data = scaler(x_data,y_data, self.cfg.base,is_train=False)
+                x_data,y_data = scaler(x_data,y_data, self.cfg.base,is_train=False, logger=logger)
 
 
 
                 return x_data, y_data
             else:
+                from stage1.utils import scaler
                 train = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.train.start_date, self.cfg.train.end_date).reset_index()
                 # valid 활용을 사실 안함...
                 # valid = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.valid.start_date, self.cfg.valid.end_date).reset_index()
@@ -203,7 +205,7 @@ class DataPreprocess:
                 x_data, y_data = jh_make_data(train, self.cfg.data)
                 logger.info(f"!!Train data infoi!! \n  x_data.shape : {x_data.shape} \t y_data.shape : {y_data.shape}")
                 ### STANDARIZE
-                x_data,y_data = scaler(x_data,y_data, self.cfg.base, is_train=True)
+                x_data,y_data = scaler(x_data,y_data, self.cfg.base, is_train=True, logger=logger)
 
                 X_train, X_valid, y_train, y_valid = train_test_split(x_data, y_data, shuffle=True,random_state=self.cfg.base.seed, test_size=0.2)
 
@@ -231,7 +233,7 @@ def jh_make_features(df_):
 
     df['day'] = df.Date.dt.day
     df['month'] = df.Date.dt.month
-    df['week'] = df.Date.dt.week
+    df['week'] = df.Date.dt.isocalendar().week
     df['year'] = df.Date.dt.year
     df['dayofweek'] = df.Date.dt.dayofweek
     # 고려사항 : 예를 들어, 우리나라 증권시장의 선물·옵션 동시 만기일은 매년 3, 6, 9, 12월 두 번째 목요일이에요.

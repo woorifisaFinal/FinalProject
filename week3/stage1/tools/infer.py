@@ -2,14 +2,19 @@
 ## 기존 라이브러리
 import pandas as pd
 
+
 ## 데이터 불러오기 위한 class
-# from stage1.data import DataPreprocess
+from stage1.data import DataPreprocess
+
+## 모델 불러오기 위한 함수
+from stage1.models import build_rnn_model
+from stage1.utils import get_logger
 
 ## 모델 불러오기 위한 함수
 # from stage1.models import create_jw_model
 # from ..models import nasdaq
 from stage1 import models
-
+import pickle
 from os.path import join as opj
 
 ## 환경설정 관련 라이브러리
@@ -54,25 +59,25 @@ def infer(cfg):
 
             models.create_jw_xgboost(cfg)
         
-        trainX, trainY, valX, valY, testX, testY  = DataPreprocess(cfg).load_data()
+        # trainX, trainY, valX, valY, testX, testY  = DataPreprocess(cfg).load_data()
 
-        ##### 모델 불러오기
+        # ##### 모델 불러오기
 
-        model = create_jw_model(trainX, trainY)
+        # model = create_jw_model(trainX, trainY)
 
-        model.load_weights(opj(cfg.base.output_dir, 'lstm_weights_last.h5'))
-        print("Loaded model weights from disk")
+        # model.load_weights(opj(cfg.base.output_dir, 'lstm_weights_last.h5'))
+        # print("Loaded model weights from disk")
 
-        ##### 예측 & 결과 저장
+        # ##### 예측 & 결과 저장
 
-        # prediction
-        prediction = model.predict(testX)
-        print(prediction.shape, testY.shape)
+        # # prediction
+        # prediction = model.predict(testX)
+        # print(prediction.shape, testY.shape)
 
-        # 추가.. 예측 결과 저장 (stage2에서 쓰도록)
-        import pickle
-        with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
-            pickle.dump(prediction, f)
+        # # 추가.. 예측 결과 저장 (stage2에서 쓰도록)
+        # import pickle
+        # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
+        #     pickle.dump(prediction, f)
 
     elif cfg.base.user_name == "sm":
 
@@ -96,9 +101,67 @@ def infer(cfg):
                 # nasdaq.nasdaq_lstm(cfg)
             elif cfg.base.model_name == "xgboost":
                 models.nasdaq_xgb(cfg)
+    elif cfg.base.user_name == "tw":
+
+        if cfg.base.task_name == "kor3y":
+
+            if cfg.base.model_name == "LSTM":
+                models.bond_short(cfg)
             
+            elif cfg.base.model_name == "xgboost":
+                models.xgb_bond_short(cfg)
+                
+        elif cfg.base.task_name == "kor10y":
+
+            if cfg.base.model_name == "LSTM":
+                models.bond_long(cfg)
+            
+            elif cfg.base.model_name == "xgboost":
+                models.xgb_bond_long(cfg)
+        elif cfg.base.task_name == "us3y":
+
+            if cfg.base.model_name == "LSTM":
+                models.us_bond_short(cfg)
+            
+            elif cfg.base.model_name == "xgboost":
+                models.xgb_us_bond_short(cfg)
+                
+
+        elif cfg.base.task_name == "us10y":
+
+            if cfg.base.model_name == "LSTM":
+                models.us_bond_long(cfg)
+            
+            elif cfg.base.model_name == "xgboost":
+                models.xgb_us_bond_long(cfg)
+                
  
         
+    elif cfg.base.user_name == "jh":
+        
+        logger = get_logger(cfg.base)
+
+        x_data, y_data = DataPreprocess(cfg).load_data(logger)
+
+        model = build_rnn_model(cfg)
+        model.load_weights(opj(cfg.base.output_dir, f"{cfg.base.task_name}_{cfg.base.model_name}_{cfg.base.exp_name}.h5"))
+
+        import numpy as np
+        ##### 예측 & 결과 저장
+        preds = np.zeros(y_data.shape)
+
+
+
+        preds = model.predict(x_data, verbose="auto") # / FOLDS
+
+        # 추가.. 예측 결과 저장 (stage2에서 쓰도록)
+        import pickle
+        # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
+        with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.pkl"), 'wb') as f:
+            pickle.dump(preds.reshape(-1,), f)
+ 
+    elif cfg.base.user_name == "bg":
+        models.gold_lstm(cfg)
 
 if __name__=="__main__":
     infer(cfg)

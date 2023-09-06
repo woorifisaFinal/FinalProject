@@ -80,8 +80,8 @@ def create_jw_lstm(cfg):
 
 
     # data reformatting for LSTM
-    pred_days = 1  
-    seq_len = 10  
+    pred_days = 50
+    seq_len = 30  
     input_dim = 10  
 
     trainX = []
@@ -125,11 +125,20 @@ def create_jw_lstm(cfg):
 
         model.fit(trainX, trainY, epochs=100, batch_size=4, validation_data=validation_data, verbose=2)
 
-
-        model.save(opj(cfg.base.output_dir,'jw_lstm_model'))
+        model.save(opj(cfg.base.output_dir,'jw_lstm_model.h5'))
     else:
-        model.load(opj(cfg.base.output_dir,'jw_lstm_model'))
-        return model.predit(valX), model.predict(testX)
+        from tensorflow.keras.models import load_model
+        model = load_model(opj(cfg.base.output_dir,'jw_lstm_model.h5'))
+        
+        val_pred = model.predict(valX)
+        test_pred = model.predict(testX)
+
+        import pickle
+        with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.pkl"), 'wb') as f:
+            pickle.dump(val_pred.reshape(-1,), f)
+
+        with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
+            pickle.dump(test_pred.reshape(-1,), f)
 
 def create_jw_xgboost(cfg):
     raw_train = pd.read_csv(opj(cfg.base.data_dir, "adj_raw_train.csv"))

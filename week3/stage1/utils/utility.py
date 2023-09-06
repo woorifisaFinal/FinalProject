@@ -29,12 +29,12 @@ def get_logger(cfg_base):
     logger.addHandler(handler2)
     return logger
 
-logger = get_logger(cfg.base)
+# logger = get_logger(cfg.base)
 
 
 
 ### STANDARIZE
-def scaler(x_data,y_data, cfg_base, is_train=False):
+def scaler(x_data,y_data, cfg_base, is_train=False, logger=None):
     """
     만약 필요하다면 feature 이름과 mn, std를 매칭 시켜서 저장해야 할 수도 있겠다. 순서가 항상 동일하다는 것을 보장할 수 없으니.
     이전에 비해 cfg.data.feature_list 바뀌면 바꿔야 한다.

@@ -2,10 +2,11 @@ importlib
 PyYAML
 argparse
 joblib
+tqdm
 
 numpy
 pandas
-sklearn
+scikit-learn
 matplotlib
 
 ta
