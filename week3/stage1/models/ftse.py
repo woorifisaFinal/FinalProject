@@ -521,7 +521,7 @@ def ftse_lstm(cfg):
     else:
         scaler = joblib.load(opj(cfg.base.output_dir,'ftse_scaler.pkl'))
         df = pd.concat([train, val])#.drop("date", axis=1)
-
+        dates = df.reset_index(drop=False)['date']
         # fit_transform을 transform으로 변경
         scaled_df = scaler.transform(df)
         scaled_test = scaler.transform(test)
@@ -538,7 +538,7 @@ def ftse_lstm(cfg):
     val_dates = dates[n_train: n_val]
 
     test_data_scaled = scaled_test[:]
-    test_dates = dates[n_test:]
+    test_dates = test.reset_index(drop=False)['date']
 
     import numpy as np
     # data reformatting for LSTM
@@ -556,9 +556,10 @@ def ftse_lstm(cfg):
     # 추론 날짜 (base_date 출력을 위한)
     val_dates_for_infer = []
     test_dates_for_infer = []
+    #### stftime로 바꿨다
     # val_dates, test_dates는 pd.Series로 되어 있고 numpy datetime으로 되어 있다.
-    val_dates = val_dates.astype('string')
-    test_dates = test_dates.astype('string')
+    # val_dates = val_dates.astype('string')
+    # test_dates = test_dates.astype('string')
 
     for i in range(seq_len, n_train - pred_days + 1):
         trainX.append(train_data_scaled[i - seq_len:i, 0:train_data_scaled.shape[1]])
@@ -659,8 +660,8 @@ def ftse_lstm(cfg):
         #     pickle.dump(test_dates, f)
 
         # 결과 저장
-        pd.DataFrame(data={"date":val_dates_for_infer, "jp":val_pred.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.csv"), index=False)
+        pd.DataFrame(data={"date":val_dates_for_infer, "uk":val_pred.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.csv"), index=False)
 
-        pd.DataFrame(data={"date":test_dates_for_infer, "jp":test_pred.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.csv"), index=False)
-                                
+        pd.DataFrame(data={"date":test_dates_for_infer, "uk":test_pred.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.csv"), index=False)
+       
 

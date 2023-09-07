@@ -93,6 +93,13 @@ def gold_lstm(cfg):
     testX = []
     testY = []
 
+    # 추론 날짜 (base_date 출력을 위한)
+    val_dates_for_infer = []
+    test_dates_for_infer = []
+    # val_dates, test_dates는 pd.Series로 되어 있고 numpy datetime으로 되어 있다.
+    val_dates = val_dates.astype('string')
+    test_dates = test_dates.astype('string')
+
     for i in range(seq_len, n_train-pred_days +1):
         trainX.append(train_data_scaled[i - seq_len:i, 0:train_data_scaled.shape[1]])
         trainY.append(train_data_scaled[i + pred_days - 1:i + pred_days, 0])
@@ -100,10 +107,14 @@ def gold_lstm(cfg):
     for i in range(seq_len, len(val_data_scaled)-pred_days +1):
         valX.append(val_data_scaled[i - seq_len:i, 0:val_data_scaled.shape[1]])
         valY.append(val_data_scaled[i + pred_days - 1:i + pred_days, 0])
+        # base_dates추가
+        val_dates_for_infer.append(val_dates[i + pred_days - 1:i + pred_days].values[0])
 
     for i in range(seq_len, len(test_data_scaled)-pred_days +1):
         testX.append(test_data_scaled[i - seq_len:i, 0:test_data_scaled.shape[1]])
         testY.append(test_data_scaled[i + pred_days - 1:i + pred_days, 0])
+        # base_dates추가
+        test_dates_for_infer.append(test_dates[i + pred_days - 1:i + pred_days].values[0])
 
     trainX, trainY = np.array(trainX), np.array(trainY)
     valX, valY = np.array(valX), np.array(valY)
@@ -182,7 +193,11 @@ def gold_lstm(cfg):
             
         # prediction = model.predict(testX)
         # print(prediction.shape, testY.shape)
+        # 결과 저장
+        pd.DataFrame(data={"date":val_dates_for_infer, cfg.base.task_name:val_pred.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.csv"), index=False)
 
+        pd.DataFrame(data={"date":test_dates_for_infer, cfg.base.task_name:test_pred.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.csv"), index=False)
+       
     # # prediction
 
     # prediction = model.predict(testX)

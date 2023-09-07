@@ -17,3 +17,9 @@ is_train is False!!!!
 !!Valid data infoi!! 
   x_data.shape : (169, 50, 17) 	 y_data.shape : (169, 1)
 is_train is False!!!!
+!!Valid data infoi!! 
+  x_data.shape : (167, 50, 17) 	 y_data.shape : (167, 1)
+is_train is False!!!!
+!!Valid data infoi!! 
+  x_data.shape : (169, 50, 17) 	 y_data.shape : (169, 1)
+is_train is False!!!!

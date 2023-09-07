@@ -184,7 +184,7 @@ class DataPreprocess:
             if self.cfg.base.mode == 'infer':
                 from stage1.utils import scaler
                 test = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.test.start_date, self.cfg.test.end_date).reset_index()
-                x_data, y_data = jh_make_data(test, self.cfg.data)
+                x_data, y_data, date_list = jh_make_data(test, self.cfg.data)
                 
                 logger.info(f"!!Valid data infoi!! \n  x_data.shape : {x_data.shape} \t y_data.shape : {y_data.shape}")
                 # 학습 때 활용했던 mn, sd 그대로 사용
@@ -193,7 +193,7 @@ class DataPreprocess:
 
 
 
-                return x_data, y_data
+                return x_data, y_data, date_list
             else:
                 from stage1.utils import scaler
                 train = pdr.get_data_yahoo(self.cfg.base.index_name, self.cfg.train.start_date, self.cfg.train.end_date).reset_index()
@@ -202,7 +202,7 @@ class DataPreprocess:
 
                 logger.info(f"train data start date : {train.Date.min()} end date : {train.Date.max()}")
                 ### 학습 데이터 생성
-                x_data, y_data = jh_make_data(train, self.cfg.data)
+                x_data, y_data, _ = jh_make_data(train, self.cfg.data)
                 logger.info(f"!!Train data infoi!! \n  x_data.shape : {x_data.shape} \t y_data.shape : {y_data.shape}")
                 ### STANDARIZE
                 x_data,y_data = scaler(x_data,y_data, self.cfg.base, is_train=True, logger=logger)
@@ -245,8 +245,8 @@ def jh_make_data(df, cfg_data, return_to_df=False):
     """
         cfg data feature_list에 있는 feature을 활용해 시계열 데이터를 만드는 함수
     """
-    df = jh_make_features(df)
-    df = df[cfg_data.feature_list].copy()
+    df_ = jh_make_features(df)
+    df = df_[cfg_data.feature_list].copy()
     # change into uncommented code (delete "+1" in -1 axis of df.iloc). caused by  IndexError: index 1230 is out of bounds for axis 0 with size 1230
     # total_sample_num = df.iloc[cfg_data.lookback_window-1:-cfg_data.lookahead_window+1].shape[0]
     total_sample_num = df.iloc[cfg_data.lookback_window-1:-cfg_data.lookahead_window].shape[0]
@@ -254,12 +254,13 @@ def jh_make_data(df, cfg_data, return_to_df=False):
 
     # 수익 계산 위해 사용
     fea_num = df.columns.get_loc("Close")
-
+    # 날짜 계산할 때는 df_ 사용
+    fea_num_Date = df_.columns.get_loc("Date")
     # 특징 하나일 떄는 아래와 같이 사용
     # x_data = np.zeros((total_sample_num, cfg_data.lookback_window, 1))
     x_data = np.zeros((total_sample_num, cfg_data.lookback_window, df.shape[1]))
     y_data = np.zeros((total_sample_num, 1))
-
+    date_list = []
     end_date = cfg_data.lookback_window-1
 
     for idx in tqdm(range(total_sample_num)):
@@ -273,6 +274,8 @@ def jh_make_data(df, cfg_data, return_to_df=False):
         # y_data[idx,] = df.iloc[idx+a, fea_num]/df.iloc[idx+end_date, fea_num]
         # y_data[idx,] = df.iloc[idx+end_date+cfg_data.lookahead_window, fea_num]/df.iloc[idx+end_date, fea_num]-1
         y_data[idx,] = df.iloc[idx+end_date+cfg_data.lookahead_window, fea_num]/df.iloc[idx+end_date, fea_num]-1
+        # 날짜 계산할 때는 df_ 사용
+        date_list.append(df_.iloc[idx+end_date, fea_num_Date])
     # pd.DataFrame(y_data).describe()
 
     if return_to_df:
@@ -285,5 +288,5 @@ def jh_make_data(df, cfg_data, return_to_df=False):
         # print('Our GRU training data has shape:', train_data.shape )
         # train_data.head()
     else:
-        return x_data, y_data
+        return x_data, y_data, date_list
 

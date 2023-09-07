@@ -17,3 +17,12 @@ is_train is False!!!!
 !!Valid data infoi!! 
   x_data.shape : (168, 50, 17) 	 y_data.shape : (168, 1)
 is_train is False!!!!
+!!Valid data infoi!! 
+  x_data.shape : (171, 50, 17) 	 y_data.shape : (171, 1)
+is_train is False!!!!
+!!Valid data infoi!! 
+  x_data.shape : (171, 50, 17) 	 y_data.shape : (171, 1)
+is_train is False!!!!
+!!Valid data infoi!! 
+  x_data.shape : (168, 50, 17) 	 y_data.shape : (168, 1)
+is_train is False!!!!

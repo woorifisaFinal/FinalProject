@@ -15,12 +15,19 @@ __all__ = ['bond_short', 'bond_long', "us_bond_long", "us_bond_short"]
 # 시계열 데이터 생성 함수 수정
 def create_sequence_data(data, sequence_length, lookahead_window):
     sequences = []
+    # 추론 날짜
+    dates_list = []
     for i in range(len(data) - sequence_length-lookahead_window + 1):
         sequence = data.iloc[i:i + sequence_length][['종가', '시가', '저가', '변동률']].values  # 수익률 제외
+       
+        
         if i + sequence_length < len(data):
             target = data.iloc[i + sequence_length+lookahead_window-1]['수익률']  # 수익률을 타겟으로 변경
             sequences.append((sequence, target))
-    return sequences
+            # i+sequence_length가 중간값
+            dates = data.iloc[i + sequence_length]['날짜']#.values[0] # timestamp라서 문제 생긴다면 .dt.strftime('%Y-%m-%d') 
+            dates_list.append(dates)
+    return sequences, dates_list
 
 def bond(cfg, file_name, country):
     if cfg.base.mode == 'train':
@@ -56,8 +63,10 @@ def bond(cfg, file_name, country):
 
 
         sequence_length = 50  # 시퀀스 길이 설정
+        
         train_data = data[(data['날짜'].dt.year >= 2017) & (data['날짜'].dt.year <= 2021)]
-        train_sequences = create_sequence_data(train_data, sequence_length, cfg.data.lookahead_window)
+        # data_list 학습할 때는 필요 없잖아..
+        train_sequences, _ = create_sequence_data(train_data, sequence_length, cfg.data.lookahead_window)
         X_train = np.array([sequence for sequence, target in train_sequences])
         y_train = np.array([target for sequence, target in train_sequences])
 
@@ -146,7 +155,7 @@ def bond(cfg, file_name, country):
         sequence_length = 50
         # 2021년 데이터로 예측 수행
         test_data_2021 = data[data['날짜'].dt.year == 2021]
-        test_sequences_2021 = create_sequence_data(test_data_2021, sequence_length, cfg.data.lookahead_window)
+        test_sequences_2021, data_sequences_2021 = create_sequence_data(test_data_2021, sequence_length, cfg.data.lookahead_window)
         X_test_2021 = np.array([sequence for sequence, target in test_sequences_2021])
         y_test_2021 = np.array([target for sequence, target in test_sequences_2021])
         predictions_2021 = model.predict(X_test_2021)
@@ -154,17 +163,24 @@ def bond(cfg, file_name, country):
 
         # 2022년 데이터로 예측 수행
         test_data_2022 = data[data['날짜'].dt.year == 2022]
-        test_sequences_2022 = create_sequence_data(test_data_2022, sequence_length, cfg.data.lookahead_window)
+        test_sequences_2022, data_sequences_2022 = create_sequence_data(test_data_2022, sequence_length, cfg.data.lookahead_window)
         X_test_2022 = np.array([sequence for sequence, target in test_sequences_2022])
         y_test_2022 = np.array([target for sequence, target in test_sequences_2022])
         predictions_2022 = model.predict(X_test_2022)
 
         
-        with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.pkl"), 'wb') as f:
-            pickle.dump(predictions_2021.reshape(-1,), f)
+        # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.pkl"), 'wb') as f:
+        #     pickle.dump(predictions_2021.reshape(-1,), f)
 
-        with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
-            pickle.dump(predictions_2022.reshape(-1,), f)
+        # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
+        #     pickle.dump(predictions_2022.reshape(-1,), f)
+
+
+        # 결과 저장
+        pd.DataFrame(data={"date":data_sequences_2021, cfg.base.task_name:predictions_2021.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.csv"), index=False)
+
+        pd.DataFrame(data={"date":data_sequences_2022, cfg.base.task_name:predictions_2022.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.csv"), index=False)
+       
 
 def bond_short(cfg):
     bond(cfg, '3년국채 데이터17_22.csv', "kor")

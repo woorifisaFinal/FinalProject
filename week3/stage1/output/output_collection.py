@@ -10,30 +10,52 @@ from os.path import join as opj
 #### output의 index로 기간들 어떻게 넣어줄지 고려해볼 부분..
 
 # opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"),
-file_list = glob(opj("stage1", "output", "*", "*_prediction_*.pkl"))
-print("file_list :", file_list)
-# 자산별 예측결과를 저장
-data_dict = {}
-for file_name in file_list:
-    # file_name == 자산명칭_prediciton_기간.pkl
-    # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'rb') as f:
-    with open(file_name, 'rb') as f:
-        prediction = pickle.load(f)
-    base_name = os.path.basename(file_name)
-    # prediction이 1차원의 numpy거나 list일 경우
-    data_dict[base_name.split("_")[0]]=prediction
+# file_list = glob(opj("stage1", "output", "*", "*_prediction_*.csv"))
+file_list_21 = glob(opj("stage1", "output", "*", "*_prediction_21.csv"))
+file_list_22 = glob(opj("stage1", "output", "*", "*_prediction_22.csv"))
 
-import pickle
 
-# for check
-with open(opj("stage1", "output", "data_dict.pkl"), 'wb') as f:
-    pickle.dump(data_dict, f)
+# print("file_list :", file_list)
+# # 자산별 예측결과를 저장
+# data_dict = {}
+# for file_name in file_list:
+#     # file_name == 자산명칭_prediciton_기간.pkl
+#     # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'rb') as f:
+#     with open(file_name, 'rb') as f:
+#         prediction = pickle.load(f)
+#     base_name = os.path.basename(file_name)
+#     # prediction이 1차원의 numpy거나 list일 경우
+#     data_dict[base_name.split("_")[0]]=prediction
+
+# import pickle
+
+# # for check
+# with open(opj("stage1", "output", "data_dict.pkl"), 'wb') as f:
+#     pickle.dump(data_dict, f)
     
-pred_reseult = pd.DataFrame(data_dict)
-# print("Hi~")
-# 이름에 기간 추가
-# pred_reseult.to_csv(f"stage1_{file_name.split("_")[-1].split(".")[0]}_prediction.csv", index=False)
-pred_reseult.to_csv(opj("stage1", "output", "stage1_prediction.csv"), index=False)
+# pred_reseult = pd.DataFrame(data_dict)
+# # print("Hi~")
+# # 이름에 기간 추가
+# # pred_reseult.to_csv(f"stage1_{file_name.split("_")[-1].split(".")[0]}_prediction.csv", index=False)
+
+
+# df_sum= pd.DataFrame()
+# for li in file_list:
+#     a = pd.read_csv(li, index_col=0).squeeze()
+#     df_sum[a.name] = a
+# df_sum.to_csv(opj("stage1", "output", "stage1_prediction.csv"), index=True)
+
+df_sum= pd.DataFrame()
+for li in file_list_21:
+    a = pd.read_csv(li, index_col=0).squeeze()
+    df_sum[a.name] = a
+df_sum.to_csv(opj("stage1", "output", "stage1_prediction_21.csv"), index=True)
+
+df_sum= pd.DataFrame()
+for li in file_list_22:
+    a = pd.read_csv(li, index_col=0).squeeze()
+    df_sum[a.name] = a
+df_sum.to_csv(opj("stage1", "output", "stage1_prediction_22.csv"), index=True)
 
 
 

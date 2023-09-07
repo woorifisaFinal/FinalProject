@@ -141,7 +141,7 @@ def infer(cfg):
         
         logger = get_logger(cfg.base)
 
-        x_data, y_data = DataPreprocess(cfg).load_data(logger)
+        x_data, y_data, date_list = DataPreprocess(cfg).load_data(logger)
 
         model = build_rnn_model(cfg)
         model.load_weights(opj(cfg.base.output_dir, f"{cfg.base.task_name}_{cfg.base.model_name}_{cfg.base.exp_name}.h5"))
@@ -157,9 +157,16 @@ def infer(cfg):
         # 추가.. 예측 결과 저장 (stage2에서 쓰도록)
         import pickle
         # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.pkl"), 'wb') as f:
-        with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.pkl"), 'wb') as f:
-            pickle.dump(preds.reshape(-1,), f)
+        # with open(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_21.pkl"), 'wb') as f:
+        #     pickle.dump(preds.reshape(-1,), f)
  
+
+        # 결과 저장
+        pd.DataFrame(data={"date":date_list, cfg.base.task_name:preds.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.csv"), index=False)
+
+        # pd.DataFrame(data={"date":data_sequences_2022, cfg.base.task_name:predictions_2022.reshape(-1,)}).to_csv(opj(cfg.base.output_dir, f"{cfg.base.task_name}_prediction_22.csv"), index=False)
+       
+
     elif cfg.base.user_name == "bg":
         models.gold_lstm(cfg)
 
