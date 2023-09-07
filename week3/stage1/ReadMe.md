@@ -1,5 +1,15 @@
 
-#### 최선의 모듈화 방법은 같이 생각해보면 좋을 것 같습니다. 의견 많이 주세요
+# 0907 정리내용
+- SM
+    - **진행 완료**
+    - 지수별(ftse, nikkei, nasdaq) LSTM만 train, val로 분리 ( xgb는 X)
+    - 경로 변경 (opj(cfg.base.output_dir, data_dir 등))
+    - 계속 지수이름으로 (모델명, task_name 등에서) 사용하다가 출력 나타낼 때만 약속된 약어(jp 등)로 사용 (model.py에서 추론 부분)
+    - **향후**
+    - ETL 자동화를 위해 raw 데이터로부터 전처리하는 코드 필요 (DataPreprocress Class에 저장해 놓을 계획)
+    - raw 데이터 출처 필요 ( 크롤링으로 매일 특정시간에 받아올 계획)
+    - 추론 날짜를 받아오기 위해
+
 
 # 목표 
 1. ipynb 파일들을 py 파일로 바꾸는 것 **필수**
